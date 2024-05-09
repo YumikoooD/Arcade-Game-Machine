@@ -1,0 +1,109 @@
+@startuml
+skin rose
+
+namespace std {}
+
+namespace core {
+
+  enum action {
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT,
+    ACTION,
+    MENU,
+    QUIT,
+    CHANGE_LIB
+  }
+
+  abstract ICoreModule {
+    // Fait le framerate
+    # graphical.IGraphicLib *graphics;
+    # game.IGame *game;
+    + main();
+  }
+
+  class AssetError extends std.exception {
+    + AssetError(const std::string &str);
+    + const char *what() const throw();
+    - const std::string _str;
+  }
+
+  enum IAssetLoader::type {
+    TEXTUAL,
+    SPRITE_2D,
+    SPRITE_3D
+  }
+
+  interface IAssetLoader {
+    + enum type
+    - std::vector<std::vector<int>> map;
+    - std::map<int, std::map<enum pos, std::string>> sprites;
+    + void init(const std::string &conf_file); //Charge le fichier de conf
+    + const std::string &get_texture(int id, enum type type) const; //Recup de la texture d'un sprites
+    + void set_elem(int id, int x, int y); // Set the element at map
+    + const std::vector<std::vector<int>> &get_map() const; // Get the map of ids
+    + const std::string &get_rules() const; // Get the rules given in the conf file
+    + const std::string &get_names() const; // Get the name given in the conf file
+    + const std::string &get_high_score() const; // Get the high-score given in the conf file
+  }
+}
+
+interface ConfFile {
+  // fichier csv
+  // name
+  // --
+  // règles
+  // --
+  // nom,high-score
+  // --
+  // id, texture_texte, texture_path_2d, texture_path_3d
+  // --
+  // starting map
+}
+
+namespace graphical {
+
+  interface IDisplayModule {
+    # std::shared_ptr<core::IAssetLoader> sprite; // Les sprites renvoyés par l'init de IGameModule
+    ~IDisplayModule();
+    + void init(std::shared_ptr<core::IAssetLoader>); // Charge les sprites du init du game
+    + std::map<core::action, bool> update(void); // Updates the screen and get the actions that happened
+    + void set_name(const std::string &name); // Set the window name
+    + void print_text(const std::string &text); // Prints a text
+  }
+
+  class GraphicalError extends std.exception {
+    + GraphicalError(const std::string &str);
+    + const char *what() const throw();
+    - const std::string _str;
+  }
+
+}
+
+namespace game {
+
+  interface IGameModule {
+    ~IGameModule();
+    # std::shared_ptr<core::IAssetLoader> sprite; // L'asset Manager
+    # std::size_t _score; // score actuel
+    + std::shared_ptr<core::IAssetLoader> init(); // Charge les fichiers ou string de remplacement avec un id
+    + void update (std::map<action, bool>); // Update le jeu avec les actions du joueur
+    + const std::size_t &get_score const (); // Donne le score du joueur actuel
+  }
+
+  class GameError extends std.exception {
+    + GameError(const std::string &str);
+    + const char *what() const throw();
+    - const std::string _str;
+  }
+
+}
+
+graphical.IDisplayModule --* core.ICoreModule
+game.IGameModule --* core.ICoreModule
+core.IAssetLoader --* ConfFile
+graphical.IDisplayModule --O core.IAssetLoader
+game.IGameModule --O core.IAssetLoader
+
+@enduml

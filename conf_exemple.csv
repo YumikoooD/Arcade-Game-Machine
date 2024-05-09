@@ -1,0 +1,17 @@
+name
+--
+regle
+--
+nom,high-score
+nom,high-score
+nom,high-score
+--
+id,char,sprite2d,sprite3d
+0,8~,asset/file1.png,asset/file1.obj
+1,~8,asset/file2.png,asset/file2.obj
+--
+0,0,0,1,1,0,0,0
+0,1,1,1,1,1,1,0
+0,0,0,1,1,0,0,0
+0,0,1,1,1,1,0,0
+0,1,1,0,0,1,1,0

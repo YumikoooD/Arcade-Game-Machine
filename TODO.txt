@@ -1,0 +1,9 @@
+Core:
+    Menu:
+        High-Score
+        Pseudo
+    AssetLoader:
+        High-Score Save
+Game:
+    Snake
+    Autre
